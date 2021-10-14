@@ -18,6 +18,8 @@ import imutils
 import time
 import dlib
 import cv2
+import pandas as pd
+
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -34,6 +36,22 @@ ap.add_argument("-c", "--confidence", type=float, default=0.4,
 ap.add_argument("-s", "--skip-frames", type=int, default=30,
 	help="# of skip frames between detections")
 args = vars(ap.parse_args())
+
+# Kalau Belumm Bikin Excel nya Run Dulu yang ini, kalau udh tidak usah
+# Framedata kolom data-data yang dibikin di excel
+df = pd.DataFrame({'No': ['Null'],
+                   'CCTV': ['Null'],
+                   'Menit': ['Null'],
+                   'Jumlah Counting': ['Null']})
+
+# Create a Pandas Excel writer using XlsxWriter as the engine.
+writer = pd.ExcelWriter('data output.xlsx', engine='xlsxwriter')
+
+# Convert the dataframe to an XlsxWriter Excel object.
+df.to_excel(writer, sheet_name='Data Jumlah Peserta CFD', index=False)
+
+# Close the Pandas Excel writer and output the Excel file.
+writer.save()
 
 # initialize the list of class labels MobileNet SSD was trained to
 # detect
@@ -270,6 +288,51 @@ while True:
 	# then update the FPS counter
 	totalFrames += 1
 	fps.update()
+	elapsed_time = time.time() - start_time
+
+	if none is none:
+		print(yes)
+    
+    # new dataframe with same columns
+    #df = pd.DataFrame({'no_data': [totalFrames],
+     #                   'nama_CCTV': ['Sample'],
+      #                  'menit': ["Jam"],
+       #                 'jumlah_counting': [totalSemua]})
+    #writerEx = pd.ExcelWriter('data output.xlsx', engine='openpyxl')
+    # try to open an existing workbook
+    #writerEx.book = load_workbook('data output.xlsx')
+    # copy existing sheets
+    #writerEx.sheets = dict((ws.title, ws) for ws in writerEx.book.worksheets)
+    # read existing file
+    #reader = pd.read_excel(r'data output.xlsx')
+    # write out the new sheet
+    #df.to_excel(writerEx,sheet_name='Data Jumlah Peserta CFD',index=False,header=False,startrow=len(reader)+1)
+    #writerEx.close()
+    #print (elapsed_time)
+        
+    #Assume 1 minutes contain 600 Frame then we will use 18000 frame increment as per 10 minutes
+	if(totalFrames == 1 or totalFrames == 18000 or totalFrames == 36000 or totalFrames == 54000 or totalFrames == 72000 
+        or totalFrames == 90000 or totalFrames == 108000 or totalFrames == 126000 or totalFrames == 144000 
+        or totalFrames == 162000 or totalFrames == 180000 or totalFrames == 198000 or totalFrames == 216000 
+        or totalFrames == 234000 or totalFrames == 252000 or totalFrames == 270000 or totalFrames == 288000 
+        or totalFrames == 306000 or totalFrames == 324000):
+        #new dataframe with same columns
+		print(totalFrames)
+        df = pd.DataFrame({'NO': [totalFrames],
+                           'CCTV': [nama_cctv],
+                           'Menit': [elapsed_time],
+                           'Jumlah Counting': [totalSemua]})
+        writerEx = pd.ExcelWriter('data output.xlsx', engine='openpyxl')
+        # try to open an existing workbook
+        writerEx.book = load_workbook('data output.xlsx')
+        # copy existing sheets
+        writerEx.sheets = dict((ws.title, ws) for ws in writerEx.book.worksheets)
+        # read existing file
+        reader = pd.read_excel(r'data output.xlsx')
+        # write out the new sheet
+        df.to_excel(writerEx,sheet_name='Data Jumlah Peserta CFD',index=False,header=False,startrow=len(reader)+1)
+        writerEx.close()
+        print (elapsed_time)
 
 # stop the timer and display FPS information
 fps.stop()
